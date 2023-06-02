@@ -1,0 +1,6 @@
+import java;
+
+public int x;
+// declarado
+
+public int y;
