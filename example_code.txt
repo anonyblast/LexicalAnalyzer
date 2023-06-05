@@ -4,3 +4,11 @@ public int x;
 // declarado
 
 public int y;
+
+String str = "Hello World!";
+String str2 = "Batman";
+
+int z = 10;
+
+boolean isTrue = true;
+boolean isFalse = false;

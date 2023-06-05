@@ -32,6 +32,7 @@ public class Token {
         LONG,
         NATIVE,
         NEW,
+        NUMBER, // DONE
         OPERATORS, // DONE
         PACKAGE,
         PRIVATE, // DONE
