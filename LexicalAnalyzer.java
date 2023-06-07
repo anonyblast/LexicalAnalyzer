@@ -55,19 +55,10 @@ public class LexicalAnalyzer {
                 String regexOnlyStringValue = "\"([^\"]*)\"";
                 Pattern patternOnlyStringValue = Pattern.compile(regexOnlyStringValue);
                 Matcher matcherOnlyStringValue = patternOnlyStringValue.matcher(currentLine);
-                
+
                 // regex for numeric values
-                String regexOnlyNumericValue = "\\b\\d+(\\.\\d+)?\\b";
+                String regexOnlyNumericValue = "-?\\d+(\\.\\d+)?";
                 Pattern patternOnlyNumericValue = Pattern.compile(regexOnlyNumericValue);
-                Matcher matcherOnlyNumericValue = patternOnlyNumericValue.matcher(currentLine);
-
-                // regex for numeric values
-                String regexOnlyBooleanValue = "\\b(true|false)\\b";
-                Pattern patternOnlyBooleanValue = Pattern.compile(regexOnlyBooleanValue);
-                Matcher matcherOnlyBooleanValue = patternOnlyBooleanValue.matcher(currentLine);
-
-
-
                 
                 // Check for different token types
                 if (currentLine.startsWith("//")) {
@@ -107,10 +98,12 @@ public class LexicalAnalyzer {
                     currentLine = currentLine.substring(6).trim();
                     return new Token(Token.TokenType.STRING, "String", lineNumber);
                 } else if (currentLine.startsWith("=") || currentLine.startsWith("{") || currentLine.startsWith("}") ||
-                    currentLine.startsWith("(") || currentLine.startsWith(")") || currentLine.startsWith(";")) {
-                        String symbol = currentLine.substring(0, 1);
-                        currentLine = currentLine.substring(1).trim();
-                        return new Token(Token.TokenType.SYMBOL, symbol, lineNumber);
+                           currentLine.startsWith("(") || currentLine.startsWith(")") || 
+                           currentLine.startsWith("[") || currentLine.startsWith("]") || 
+                           currentLine.startsWith(";")) {
+                    String symbol = currentLine.substring(0, 1);
+                    currentLine = currentLine.substring(1).trim();
+                    return new Token(Token.TokenType.SYMBOL, symbol, lineNumber);
                 } else if (currentLine.toUpperCase().startsWith("IMPORT")) {
                     currentLine = currentLine.substring(6).trim();
                     return new Token(Token.TokenType.IMPORT, "import", lineNumber);
@@ -126,18 +119,6 @@ public class LexicalAnalyzer {
                 } else if (currentLine.toUpperCase().startsWith("FALSE")){
                     currentLine = currentLine.substring(5).trim();
                     return new Token(Token.TokenType.BOOLEAN, "Boolean:value", lineNumber);
-                } else if (matcherOperators.find()) {
-                    currentLine = currentLine.substring(matcherOperators.group().length()).trim();
-                    return new Token(Token.TokenType.OPERATORS, "COMPARATION: " + matcherOperators.group(), lineNumber);
-                } else if (matcherOnlyNumericValue.find()){
-                    currentLine = currentLine.substring(matcherOnlyNumericValue.group().length()).trim();
-                    return new Token(Token.TokenType.NUMBER, "Number:value", lineNumber);
-                } else if (matcher.find()){
-                    currentLine = currentLine.substring(matcher.group().length()).trim();
-                    return new Token(Token.TokenType.IDENTIFIER, matcher.group(), lineNumber);
-                } else if (matcherOnlyStringValue.find()){
-                    currentLine = currentLine.substring(matcherOnlyStringValue.group(1).length() + 2).trim();
-                    return new Token(Token.TokenType.STRING, "String:value", lineNumber);
                 } else if (currentLine.toUpperCase().startsWith("WHILE")) {
                     currentLine = currentLine.substring(5).trim();
                     return new Token(Token.TokenType.WHILE, "while", lineNumber);
@@ -147,6 +128,18 @@ public class LexicalAnalyzer {
                 } else if (currentLine.toUpperCase().startsWith("RETURN")) {
                     currentLine = currentLine.substring(6).trim();
                     return new Token(Token.TokenType.RETURN, "return", lineNumber);
+                } else if (matcher.find()){
+                    currentLine = currentLine.substring(matcher.group().length()).trim();
+                    Matcher matcherOnlyNumericValue = patternOnlyNumericValue.matcher(matcher.group());
+                        if (matcherOnlyNumericValue.find()) 
+                            return new Token(Token.TokenType.NUMBER, matcherOnlyNumericValue.group(), lineNumber);
+                    return new Token(Token.TokenType.IDENTIFIER, matcher.group(), lineNumber);
+                } else if (matcherOperators.find()) {
+                    currentLine = currentLine.substring(matcherOperators.group().length()).trim();
+                    return new Token(Token.TokenType.OPERATORS, "COMPARATION: " + matcherOperators.group(), lineNumber);
+                } else if (matcherOnlyStringValue.find()){
+                    currentLine = currentLine.substring(matcherOnlyStringValue.group(1).length() + 2).trim();
+                    return new Token(Token.TokenType.STRING, "String:value", lineNumber);
                 } else {
                     System.err.println("Lexical Error: Invalid token at line " + lineNumber + "\t" + currentLine);
                     currentLine = null;
