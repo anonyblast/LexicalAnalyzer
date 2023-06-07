@@ -1,5 +1,5 @@
 import java;
-hshshsksksnka
 
 int y = 10;
 String str = "string";
+public int x = 10;

@@ -7,6 +7,7 @@ public class LexicalAnalyzer {
     private BufferedReader reader;
     private String currentLine;
     private int lineNumber;
+
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED_BACKGROUND = "\u001B[41m";
 
@@ -20,7 +21,7 @@ public class LexicalAnalyzer {
     }
 
 
-    public Token getNextToken() {
+    public Token getNextToken() {        
         if (reader == null) {
             return null;
         }
@@ -46,11 +47,6 @@ public class LexicalAnalyzer {
                 Pattern pattern = Pattern.compile(regex);
                 Matcher matcher = pattern.matcher(currentLine);
 
-                // regex for comparation operators
-                String regexOperators = "(<=|>=|<|>|!=|==)+";
-                Pattern patternOperators = Pattern.compile(regexOperators);
-                Matcher matcherOperators = patternOperators.matcher(currentLine);
-                
                 // regex for string values
                 String regexOnlyStringValue = "\"([^\"]*)\"";
                 Pattern patternOnlyStringValue = Pattern.compile(regexOnlyStringValue);
@@ -59,14 +55,12 @@ public class LexicalAnalyzer {
                 // regex for numeric values
                 String regexOnlyNumericValue = "-?\\d+(\\.\\d+)?";
                 Pattern patternOnlyNumericValue = Pattern.compile(regexOnlyNumericValue);
-                
+
                 // Check for different token types
                 if (currentLine.startsWith("//")) {
                     currentLine = null;
-                    return new Token(Token.TokenType.COMMENTS, "comments", lineNumber);
                 } else if (currentLine.isEmpty()) {
                     currentLine = null;
-                    return new Token(Token.TokenType.WHITESPACE, "whitespace", lineNumber);
                 } else if (currentLine.toUpperCase().startsWith("PUBLIC")) {
                     currentLine = currentLine.substring(6).trim();
                     return new Token(Token.TokenType.PUBLIC, "public", lineNumber);
@@ -131,12 +125,9 @@ public class LexicalAnalyzer {
                 } else if (matcher.find()){
                     currentLine = currentLine.substring(matcher.group().length()).trim();
                     Matcher matcherOnlyNumericValue = patternOnlyNumericValue.matcher(matcher.group());
-                        if (matcherOnlyNumericValue.find()) 
-                            return new Token(Token.TokenType.NUMBER, matcherOnlyNumericValue.group(), lineNumber);
+                    if (matcherOnlyNumericValue.find()) 
+                        return new Token(Token.TokenType.NUMBER, matcherOnlyNumericValue.group(), lineNumber);
                     return new Token(Token.TokenType.IDENTIFIER, matcher.group(), lineNumber);
-                } else if (matcherOperators.find()) {
-                    currentLine = currentLine.substring(matcherOperators.group().length()).trim();
-                    return new Token(Token.TokenType.OPERATORS, "COMPARATION: " + matcherOperators.group(), lineNumber);
                 } else if (matcherOnlyStringValue.find()){
                     currentLine = currentLine.substring(matcherOnlyStringValue.group(1).length() + 2).trim();
                     return new Token(Token.TokenType.STRING, "String:value", lineNumber);
