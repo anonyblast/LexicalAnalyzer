@@ -54,7 +54,6 @@ public class Token {
         VOID, // DONE
         VOLATILE,
         WHILE, // DONE
-        WHITESPACE, // DONE
         IDENTIFIER, // DONE
         SYMBOL // DONE
     }  

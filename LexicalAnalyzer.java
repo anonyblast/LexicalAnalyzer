@@ -20,8 +20,7 @@ public class LexicalAnalyzer {
         }
     }
 
-
-    public Token getNextToken() {        
+    public Token getNextToken() {
         if (reader == null) {
             return null;
         }
@@ -36,9 +35,9 @@ public class LexicalAnalyzer {
                         return null;
                     }
                 }
-                
+
                 currentLine = currentLine.trim();
-                
+
                 // System.out.println(ANSI_RED_BACKGROUND + currentLine + ANSI_RESET);
                 System.out.println("\nINPUT:\t" + currentLine);
 
@@ -92,9 +91,9 @@ public class LexicalAnalyzer {
                     currentLine = currentLine.substring(6).trim();
                     return new Token(Token.TokenType.STRING, "String", lineNumber);
                 } else if (currentLine.startsWith("=") || currentLine.startsWith("{") || currentLine.startsWith("}") ||
-                           currentLine.startsWith("(") || currentLine.startsWith(")") || 
-                           currentLine.startsWith("[") || currentLine.startsWith("]") || 
-                           currentLine.startsWith(";")) {
+                        currentLine.startsWith("(") || currentLine.startsWith(")") ||
+                        currentLine.startsWith("[") || currentLine.startsWith("]") ||
+                        currentLine.startsWith(";")) {
                     String symbol = currentLine.substring(0, 1);
                     currentLine = currentLine.substring(1).trim();
                     return new Token(Token.TokenType.SYMBOL, symbol, lineNumber);
@@ -107,10 +106,10 @@ public class LexicalAnalyzer {
                 } else if (currentLine.toUpperCase().startsWith("ELSE")) {
                     currentLine = currentLine.substring(4).trim();
                     return new Token(Token.TokenType.ELSE, "else", lineNumber);
-                } else if (currentLine.toUpperCase().startsWith("TRUE")){
+                } else if (currentLine.toUpperCase().startsWith("TRUE")) {
                     currentLine = currentLine.substring(4).trim();
                     return new Token(Token.TokenType.BOOLEAN, "Boolean:value", lineNumber);
-                } else if (currentLine.toUpperCase().startsWith("FALSE")){
+                } else if (currentLine.toUpperCase().startsWith("FALSE")) {
                     currentLine = currentLine.substring(5).trim();
                     return new Token(Token.TokenType.BOOLEAN, "Boolean:value", lineNumber);
                 } else if (currentLine.toUpperCase().startsWith("WHILE")) {
@@ -122,15 +121,15 @@ public class LexicalAnalyzer {
                 } else if (currentLine.toUpperCase().startsWith("RETURN")) {
                     currentLine = currentLine.substring(6).trim();
                     return new Token(Token.TokenType.RETURN, "return", lineNumber);
-                } else if (matcher.find()){
+                } else if (matcher.find()) {
                     currentLine = currentLine.substring(matcher.group().length()).trim();
                     Matcher matcherOnlyNumericValue = patternOnlyNumericValue.matcher(matcher.group());
-                    if (matcherOnlyNumericValue.find()) 
+                    if (matcherOnlyNumericValue.find())
                         return new Token(Token.TokenType.NUMBER, matcherOnlyNumericValue.group(), lineNumber);
                     return new Token(Token.TokenType.IDENTIFIER, matcher.group(), lineNumber);
-                } else if (matcherOnlyStringValue.find()){
+                } else if (matcherOnlyStringValue.find()) {
                     currentLine = currentLine.substring(matcherOnlyStringValue.group(1).length() + 2).trim();
-                    return new Token(Token.TokenType.STRING, "String:value", lineNumber);
+                    return new Token(Token.TokenType.STRING, matcherOnlyStringValue.group(1), lineNumber);
                 } else {
                     System.err.println("Lexical Error: Invalid token at line " + lineNumber + "\t" + currentLine);
                     currentLine = null;

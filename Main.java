@@ -1,3 +1,19 @@
+/** 
+ *  TO DO: Esse projeto consiste na implementação de um Analisador Léxico para o estudo dos AFDs 
+ *  (Autômato Finito Deterministico), escolhendo uma linguagem qualquer como referência (ou criar uma do zero) 
+ *  para ser analisada.
+ * 
+ *  Linguagem escolhida para a análise : JAVA
+ *  Linguagem escolhida para ser analisada : JAVA
+ * 
+ *  A partir de um arquivo fonte, o código faz a leitura de cada linha individualmente, percorrendo-a e eliminando
+ *  os tokens válidos encontrados segundo um Enum (onde estão armazenados os tokens - Token.java).
+ * 
+ *  Date : June, 29 2023
+ *  Author : Gustavo Iafelix
+ * 
+ * */
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +29,10 @@ public class Main {
             System.out.println(token);
         }
         System.out.println("\n\n\n------- Tabela de simbolos: -------");
+        System.out.println("Valor\t|\tTipo");
+        System.out.println("-----------------------------------\n");
         for (Token t : tokens) {
-            System.out.println(t.getType());
+            System.out.println(t.getLexeme() + "\t|\t" + t.getType());
         }
     }
 }
